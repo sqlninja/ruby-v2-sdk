@@ -107,7 +107,7 @@ module Ooyala
     # Gets the default value for using cache url. If not specified, the default one.
     # This is used in the build_url method
     # Returns the Boolean.
-    def turn_off_cache?
+    def turn_off_cache
       @turn_off_cache || TURN_OFF_CACHE
     end
 
@@ -291,7 +291,7 @@ module Ooyala
     # Returns a String with the built URL.
     def build_url(http_method, request_path, query_params = {})
       url  = http_method == 'GET' ? cache_base_url : base_url
-      url = base_url if turn_off_cache?
+      url = base_url if turn_off_cache == 'true'
       url += request_path + '?'
       url + query_params.sort { |a, b| a[0].to_s <=> b[0].to_s }.map do |param|
         param.join('=')
