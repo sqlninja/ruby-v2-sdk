@@ -108,7 +108,7 @@ module Ooyala
     # This is used in the build_url method
     # Returns the Boolean.
     def turn_off_cache?
-      @turn_off_cache? || TURN_OFF_CACHE
+      @turn_off_cache || TURN_OFF_CACHE
     end
 
     # Initialize an API. Takes the secret and api keys. If these are not
