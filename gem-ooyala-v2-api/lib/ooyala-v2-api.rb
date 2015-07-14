@@ -57,6 +57,7 @@ module Ooyala
     DEFAULT_CACHE_BASE_URL    = 'https://cdn-api.ooyala.com'
     DEFAULT_EXPIRATION_WINDOW = 15
     ROUND_UP_TIME             = 300
+    TURN_OFF_CACHE                = true
 
     # Sets the String base URL (default: "https://api.ooyala.com").
     attr_writer :base_url
@@ -76,6 +77,9 @@ module Ooyala
     # Gets/Sets the API key. This can be found in Backlot's developers tab
     # (http://ooyala.com/backlot/web).
     attr_accessor :api_key
+
+    # Gets/Sets the boolean to use cache url. (default: true)
+    attr_accessor :turn_off_cache
 
     # Gets the base URL. If no base URL is specified it will return the default
     # one.
@@ -100,6 +104,13 @@ module Ooyala
       @expiration_window || DEFAULT_EXPIRATION_WINDOW
     end
 
+    # Gets the default value for using cache url. If not specified, the default one.
+    # This is used in the build_url method
+    # Returns the Boolean.
+    def turn_off_cache?
+      @turn_off_cache? || TURN_OFF_CACHE
+    end
+
     # Initialize an API. Takes the secret and api keys. If these are not
     # specified the class properties will be used to make requests,
     # generate signatrues, etc.
@@ -114,6 +125,7 @@ module Ooyala
     #                                     default one.
     #                :expiration_window - The Number in seconds to override the
     #                                     default value (optional).
+    #                :turn_off_cache         - The Boolean to override the default
     def initialize(api_key, secret_key, options = {})
       self.secret_key = secret_key
       self.api_key    = api_key
@@ -122,6 +134,7 @@ module Ooyala
         options['cache_base_url']
       self.expiration_window = options[:expiration_window] ||
         options['expiration_window']
+      self.turn_off_cache = options[:turn_off_cache] || options['turn_off_cache']
     end
 
     # Makes a GET request.
@@ -278,11 +291,13 @@ module Ooyala
     # Returns a String with the built URL.
     def build_url(http_method, request_path, query_params = {})
       url  = http_method == 'GET' ? cache_base_url : base_url
+      url = base_url if turn_off_cache?
       url += request_path + '?'
       url + query_params.sort { |a, b| a[0].to_s <=> b[0].to_s }.map do |param|
-        param.join("=")
-      end.join("&")
+        param.join('=')
+      end.join('&')
     end
+
 
     private
     def sanitize_and_add_needed_parameters(params)
