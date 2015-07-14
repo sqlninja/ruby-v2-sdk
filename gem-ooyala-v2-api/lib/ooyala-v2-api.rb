@@ -57,7 +57,7 @@ module Ooyala
     DEFAULT_CACHE_BASE_URL    = 'https://cdn-api.ooyala.com'
     DEFAULT_EXPIRATION_WINDOW = 15
     ROUND_UP_TIME             = 300
-    TURN_OFF_CACHE                = true
+    TURN_OFF_CACHE            = false
 
     # Sets the String base URL (default: "https://api.ooyala.com").
     attr_writer :base_url
